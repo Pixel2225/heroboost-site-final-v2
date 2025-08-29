@@ -10,9 +10,9 @@ export default function BrawlStars() {
   const [desiredTrophies, setDesiredTrophies] = useState([1000]);
   const [totalPrice, setTotalPrice] = useState("0.00");
 
-  // Paramètres Brawl Stars
+  // Paramètres BS
   const MIN = 0;
-  const MAX = 30000;  // ajuste si besoin
+  const MAX = 30000;   // ajuste selon tes règles
   const STEP = 10;
 
   // Tarif
@@ -37,9 +37,10 @@ export default function BrawlStars() {
 
   useEffect(() => {
     const raw = diff * pricePerTrophy;
-    setTotalPrice(raw.toFixed(2));     // ❌ pas de plancher
+    setTotalPrice(raw.toFixed(2)); // <-- pas de plancher
   }, [diff, pricePerTrophy]);
 
+  // Clamp desired >= current
   const onChangeCurrent = (v) => {
     const val = Number(v[0] || 0);
     setCurrentTrophies([val]);
@@ -59,6 +60,7 @@ export default function BrawlStars() {
           Brawl Stars — Boost de trophées
         </CardTitle>
       </CardHeader>
+
       <CardContent className="space-y-8">
         {/* Actuels */}
         <section>
@@ -94,9 +96,7 @@ export default function BrawlStars() {
         <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
           <div className="p-3 rounded-lg border border-gray-200/10">
             <div className="text-xs text-muted-foreground">Différence</div>
-            <div className="text-lg font-semibold">
-              {diff.toLocaleString("fr-FR")}
-            </div>
+            <div className="text-lg font-semibold">{diff.toLocaleString("fr-FR")}</div>
           </div>
           <div className="p-3 rounded-lg border border-gray-200/10">
             <div className="text-xs text-muted-foreground">Prix / 1000</div>
@@ -104,7 +104,7 @@ export default function BrawlStars() {
           </div>
           <div className="p-3 rounded-lg border border-gray-200/10">
             <div className="text-xs text-muted-foreground">Total</div>
-            <div className="text-xl font-bold">{totalPrice} €</div>
+            <div className="text-xl font-bold">{totalPrice} €</div> {/* <-- totalPrice */}
           </div>
         </section>
 

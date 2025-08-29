@@ -6,14 +6,14 @@ import { Slider } from "@/components/ui/slider";
 import { Trophy, Crown, Zap } from "lucide-react";
 
 export default function ClashRoyale() {
-  // Radix Slider -> valeurs sous forme [number]
+  // Radix Slider => valeurs sous forme d'array [number]
   const [currentTrophies, setCurrentTrophies] = useState([0]);
   const [desiredTrophies, setDesiredTrophies] = useState([1000]);
   const [totalPrice, setTotalPrice] = useState("0.00");
 
-  // Paramètres
+  // Paramètres (ajuste MAX/STEP si besoin)
   const MIN = 0;
-  const MAX = 10000;   // adapte si besoin
+  const MAX = 10000;
   const STEP = 10;
 
   // Tarif
@@ -38,7 +38,7 @@ export default function ClashRoyale() {
 
   useEffect(() => {
     const raw = diff * pricePerTrophy;
-    setTotalPrice(raw.toFixed(2));      // ❌ pas de plancher, juste le vrai prix
+    setTotalPrice(raw.toFixed(2)); // <-- pas de plancher
   }, [diff, pricePerTrophy]);
 
   // Clamp desired >= current
@@ -122,7 +122,7 @@ export default function ClashRoyale() {
               </div>
               <div className="p-3 rounded-lg border border-gray-200/10">
                 <div className="text-xs text-muted-foreground">Total</div>
-                <div className="text-xl font-bold">{totalPrice} €</div>
+                <div className="text-xl font-bold">{totalPrice} €</div> {/* <-- totalPrice */}
               </div>
             </section>
 
