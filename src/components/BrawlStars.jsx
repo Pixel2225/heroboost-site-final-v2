@@ -72,31 +72,49 @@ const BrawlStars = () => {
                   className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
                 />
               </div>
+              <div className="p-4 bg-gray-600 rounded-lg">
+                <span className="text-lg font-semibold">Trophées à gagner :</span>
+                <span className="text-lg font-bold ml-2">+ {difference.toLocaleString()} 🏆</span>
+              </div>
             </div>
           </div>
 
           {/* Section du résumé de la commande */}
           <div className="p-6 bg-gray-700 rounded-lg flex flex-col justify-between">
             <div>
-              <h3 className="text-xl font-semibold mb-4">Résumé</h3>
+              <h3 className="text-xl font-semibold mb-4">Sélectionnez la vitesse d'achèvement</h3>
               <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span>Différence:</span>
-                  <span className="font-bold">{difference.toLocaleString()}</span>
+                <div className="p-3 bg-gray-600 rounded-lg flex justify-between items-center cursor-pointer border-2 border-green-500">
+                  <span>Exprimer</span>
+                  <span className="text-green-400">+0,64 € 🔥</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Prix / 1000:</span>
-                  <span className="font-bold">{BASE_PRICE_PER_1000.toFixed(2)} €</span>
+                <div className="p-3 bg-gray-600 rounded-lg flex justify-between items-center cursor-pointer">
+                  <span>Super Express</span>
+                  <span className="text-orange-400">+1,28 € 🔥</span>
                 </div>
+                {/* Vous pouvez ajouter d'autres options ici */}
+              </div>
+              <div className="mt-6">
                 <div className="flex justify-between text-2xl font-bold text-green-400">
                   <span>Total:</span>
                   <span>{totalPrice} €</span>
                 </div>
+                <p className="text-sm text-gray-400 mt-1">0,19 € remboursement garanti inclus</p>
               </div>
             </div>
-            <button className="w-full py-3 mt-6 text-lg font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
-              Commander
-            </button>
+            <div className="mt-6">
+              <input
+                type="email"
+                placeholder="Votre email"
+                className="w-full p-3 mb-4 bg-gray-800 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <button className="w-full py-3 text-lg font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+                Achetez maintenant
+              </button>
+              <button className="w-full py-3 mt-2 text-lg font-bold text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors">
+                G Pay
+              </button>
+            </div>
           </div>
         </div>
       </div>
