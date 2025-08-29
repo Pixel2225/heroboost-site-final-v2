@@ -3,24 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Trophy } from "lucide-react";
+import { Trophy, Crown } from "lucide-react";
 
 export default function BrawlStars() {
-  // Radix slider => états sous forme d'array [value]
   const [currentTrophies, setCurrentTrophies] = useState([0]);
   const [desiredTrophies, setDesiredTrophies] = useState([1000]);
-  const [totalPrice, setTotalPrice] = useState("2.69");
+  const [totalPrice, setTotalPrice] = useState("0.00");
 
-  // ====== Paramètres ======
+  // Paramètres Brawl Stars
   const MIN = 0;
-  const MAX = 30000;       // adapte à ton jeu
+  const MAX = 30000;  // ajuste si besoin
   const STEP = 10;
 
-  // Prix: ex. 2,65 € / 1000 trophées
+  // Tarif
   const priceFor1000 = 2.65;
   const pricePerTrophy = priceFor1000 / 1000;
 
-  // ====== Calculs dérivés, toujours à partir de l'état ======
+  // Dérivés
   const diff = useMemo(() => {
     const cur = Number(currentTrophies[0] || 0);
     const des = Number(desiredTrophies[0] || 0);
@@ -31,29 +30,23 @@ export default function BrawlStars() {
     () => Number(currentTrophies[0] || 0).toLocaleString("fr-FR"),
     [currentTrophies]
   );
-
   const formattedDesired = useMemo(
     () => Number(desiredTrophies[0] || 0).toLocaleString("fr-FR"),
     [desiredTrophies]
   );
 
   useEffect(() => {
-    const newTotal = (diff * pricePerTrophy).toFixed(2);
-    // minimum 2.69 € si tu veux garder un plancher
-    setTotalPrice(String(Math.max(2.69, Number(newTotal)).toFixed(2)));
+    const raw = diff * pricePerTrophy;
+    setTotalPrice(raw.toFixed(2));     // ❌ pas de plancher
   }, [diff, pricePerTrophy]);
 
-  // ====== Garde desired >= current ======
   const onChangeCurrent = (v) => {
     const val = Number(v[0] || 0);
-    // clamp: si current > desired, on remonte desired
     setCurrentTrophies([val]);
     if (val > Number(desiredTrophies[0])) setDesiredTrophies([val]);
   };
-
   const onChangeDesired = (v) => {
     const val = Number(v[0] || 0);
-    // clamp: si desired < current, on baisse current
     setDesiredTrophies([val]);
     if (val < Number(currentTrophies[0])) setCurrentTrophies([val]);
   };
@@ -66,58 +59,59 @@ export default function BrawlStars() {
           Brawl Stars — Boost de trophées
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Slider "Actuel" */}
-        <div>
-          <div className="flex justify-between mb-2 text-sm">
-            <span>Trophées actuels</span>
+      <CardContent className="space-y-8">
+        {/* Actuels */}
+        <section>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted-foreground">Trophées actuels</span>
             <Badge variant="secondary">{formattedCurrent}</Badge>
           </div>
           <Slider
-            value={currentTrophies}           // ✅ contrôlé
-            onValueChange={onChangeCurrent}   // ✅ event Radix
+            value={currentTrophies}
+            onValueChange={onChangeCurrent}
             min={MIN}
             max={MAX}
             step={STEP}
           />
-        </div>
+        </section>
 
-        {/* Slider "Souhaité" */}
-        <div>
-          <div className="flex justify-between mb-2 text-sm">
-            <span>Trophées souhaités</span>
+        {/* Souhaités */}
+        <section>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-muted-foreground">Trophées souhaités</span>
             <Badge variant="secondary">{formattedDesired}</Badge>
           </div>
           <Slider
-            value={desiredTrophies}           // ✅ contrôlé
-            onValueChange={onChangeDesired}   // ✅ event Radix
+            value={desiredTrophies}
+            onValueChange={onChangeDesired}
             min={MIN}
             max={MAX}
             step={STEP}
           />
-        </div>
+        </section>
 
-        {/* Résumé dynamique */}
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
+        {/* Résumé */}
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+          <div className="p-3 rounded-lg border border-gray-200/10">
             <div className="text-xs text-muted-foreground">Différence</div>
             <div className="text-lg font-semibold">
               {diff.toLocaleString("fr-FR")}
             </div>
           </div>
-          <div>
-            <div className="text-xs text-muted-foreground">Prix / 1k</div>
-            <div className="text-lg font-semibold">
-              {priceFor1000.toFixed(2)} €
-            </div>
+          <div className="p-3 rounded-lg border border-gray-200/10">
+            <div className="text-xs text-muted-foreground">Prix / 1000</div>
+            <div className="text-lg font-semibold">{priceFor1000.toFixed(2)} €</div>
           </div>
-          <div>
+          <div className="p-3 rounded-lg border border-gray-200/10">
             <div className="text-xs text-muted-foreground">Total</div>
             <div className="text-xl font-bold">{totalPrice} €</div>
           </div>
-        </div>
+        </section>
 
-        <Button className="w-full">Commander</Button>
+        <Button className="w-full">
+          <Crown className="w-4 h-4 mr-2" />
+          Commander
+        </Button>
       </CardContent>
     </Card>
   );

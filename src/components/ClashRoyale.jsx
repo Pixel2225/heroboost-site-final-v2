@@ -6,22 +6,21 @@ import { Slider } from "@/components/ui/slider";
 import { Trophy, Crown, Zap } from "lucide-react";
 
 export default function ClashRoyale() {
-  // Radix Slider => valeur sous forme d'array [value]
+  // Radix Slider -> valeurs sous forme [number]
   const [currentTrophies, setCurrentTrophies] = useState([0]);
   const [desiredTrophies, setDesiredTrophies] = useState([1000]);
-  const [totalPrice, setTotalPrice] = useState("6.69");
+  const [totalPrice, setTotalPrice] = useState("0.00");
 
-  // ====== Paramètres spécifiques CR ======
+  // Paramètres
   const MIN = 0;
-  const MAX = 10000;      // adapte au plafond Clash Royale si besoin
+  const MAX = 10000;   // adapte si besoin
   const STEP = 10;
 
-  // Prix: ~6.65 € / 1000 trophées ; plancher 6.69 €
+  // Tarif
   const priceFor1000 = 6.65;
   const pricePerTrophy = priceFor1000 / 1000;
-  const MIN_PRICE = 6.69;
 
-  // ====== Dérivés depuis l'état ======
+  // Dérivés
   const diff = useMemo(() => {
     const cur = Number(currentTrophies[0] || 0);
     const des = Number(desiredTrophies[0] || 0);
@@ -38,18 +37,16 @@ export default function ClashRoyale() {
   );
 
   useEffect(() => {
-    const raw = Number((diff * pricePerTrophy).toFixed(2));
-    const withFloor = Math.max(MIN_PRICE, raw);
-    setTotalPrice(withFloor.toFixed(2));
+    const raw = diff * pricePerTrophy;
+    setTotalPrice(raw.toFixed(2));      // ❌ pas de plancher, juste le vrai prix
   }, [diff, pricePerTrophy]);
 
-  // ====== Handlers avec clamp (desired >= current) ======
+  // Clamp desired >= current
   const onChangeCurrent = (v) => {
     const val = Number(v[0] || 0);
     setCurrentTrophies([val]);
     if (val > Number(desiredTrophies[0])) setDesiredTrophies([val]);
   };
-
   const onChangeDesired = (v) => {
     const val = Number(v[0] || 0);
     setDesiredTrophies([val]);
@@ -58,7 +55,6 @@ export default function ClashRoyale() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Header / back */}
       <nav className="bg-gray-800/95 backdrop-blur-sm border-b border-gray-700 sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center">
           <Button
@@ -82,30 +78,30 @@ export default function ClashRoyale() {
           </CardHeader>
 
           <CardContent className="space-y-8">
-            {/* Slider "Actuels" */}
+            {/* Actuels */}
             <section>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-muted-foreground">Trophées actuels</span>
                 <Badge variant="secondary">{formattedCurrent}</Badge>
               </div>
               <Slider
-                value={currentTrophies}           // ✅ contrôlé
-                onValueChange={onChangeCurrent}   // ✅ Radix event
+                value={currentTrophies}
+                onValueChange={onChangeCurrent}
                 min={MIN}
                 max={MAX}
                 step={STEP}
               />
             </section>
 
-            {/* Slider "Souhaités" */}
+            {/* Souhaités */}
             <section>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-muted-foreground">Trophées souhaités</span>
                 <Badge variant="secondary">{formattedDesired}</Badge>
               </div>
               <Slider
-                value={desiredTrophies}           // ✅ contrôlé
-                onValueChange={onChangeDesired}   // ✅ Radix event
+                value={desiredTrophies}
+                onValueChange={onChangeDesired}
                 min={MIN}
                 max={MAX}
                 step={STEP}
@@ -120,14 +116,10 @@ export default function ClashRoyale() {
                   {diff.toLocaleString("fr-FR")}
                 </div>
               </div>
-
               <div className="p-3 rounded-lg border border-gray-200/10">
                 <div className="text-xs text-muted-foreground">Prix / 1000</div>
-                <div className="text-lg font-semibold">
-                  {priceFor1000.toFixed(2)} €
-                </div>
+                <div className="text-lg font-semibold">{priceFor1000.toFixed(2)} €</div>
               </div>
-
               <div className="p-3 rounded-lg border border-gray-200/10">
                 <div className="text-xs text-muted-foreground">Total</div>
                 <div className="text-xl font-bold">{totalPrice} €</div>
