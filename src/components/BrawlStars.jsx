@@ -1,3 +1,4 @@
+// src/components/BrawlStars.jsx
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,6 @@ import { Slider } from "@/components/ui/slider";
 import { Trophy, Crown } from "lucide-react";
 
 export default function BrawlStars() {
-  // Valeurs numériques (Slider shadcn prend/renvoie un array -> on lit v[0])
   const [currentTrophies, setCurrentTrophies] = useState(0);
   const [desiredTrophies, setDesiredTrophies] = useState(1000);
 
@@ -16,7 +16,6 @@ export default function BrawlStars() {
 
   const pricePer1000 = 2.65;
 
-  // Calculs live
   const diff = Math.max(0, desiredTrophies - currentTrophies);
   const totalPrice = ((diff / 1000) * pricePer1000).toFixed(2);
 
@@ -86,3 +85,21 @@ export default function BrawlStars() {
             <div className="text-lg font-semibold">
               {pricePer1000.toFixed(2)} €
             </div>
+          </div>
+
+          <div className="p-3 rounded-lg border border-gray-200/10">
+            <div className="text-xs text-muted-foreground">Total</div>
+            <div className="text-xl font-bold">
+              {totalPrice} €
+            </div>
+          </div>
+        </section>
+
+        <Button className="w-full">
+          <Crown className="w-4 h-4 mr-2" />
+          Commander
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
