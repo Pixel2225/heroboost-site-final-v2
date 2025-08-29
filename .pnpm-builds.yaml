@@ -1,0 +1,3 @@
+allowedBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - 'esbuild'
