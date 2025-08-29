@@ -1,83 +1,107 @@
-// src/components/BrawlStars.jsx
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
-import { Trophy, Crown } from "lucide-react";
+import React, { useState, useMemo } from 'react';
 
-export default function BrawlStars() {
+const BrawlStars = () => {
   const [currentTrophies, setCurrentTrophies] = useState(0);
-  const [desiredTrophies, setDesiredTrophies] = useState(1000);
+  const [desiredTrophies, setDesiredTrophies] = useState(5000);
 
-  const MIN = 0;
-  const MAX = 30000;
-  const STEP = 10;
+  // Le prix de base pour 1000 trophées
+  const BASE_PRICE_PER_1000 = 2.65;
 
-  const pricePer1000 = 2.65;
+  // Calcule la différence de trophées à chaque mise à jour
+  const difference = useMemo(() => {
+    const diff = desiredTrophies - currentTrophies;
+    return diff > 0 ? diff : 0;
+  }, [currentTrophies, desiredTrophies]);
 
-  // 🔥 Différence et total calculés dynamiquement
-  const diff = Math.max(0, desiredTrophies - currentTrophies);
-  const totalPrice = ((diff / 1000) * pricePer1000).toFixed(2);
+  // Calcule le prix total à chaque mise à jour
+  const totalPrice = useMemo(() => {
+    if (difference <= 0) {
+      return 0;
+    }
+    const price = (difference / 1000) * BASE_PRICE_PER_1000;
+    return price.toFixed(2); // Arrondi à 2 décimales pour l'affichage
+  }, [difference, BASE_PRICE_PER_1000]);
+
+  const handleCurrentTrophiesChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setCurrentTrophies(value);
+    // S'assure que les trophées désirés ne sont jamais inférieurs aux trophées actuels
+    if (value > desiredTrophies) {
+      setDesiredTrophies(value);
+    }
+  };
+
+  const handleDesiredTrophiesChange = (event) => {
+    const value = parseInt(event.target.value, 10);
+    setDesiredTrophies(value);
+  };
 
   return (
-    <Card className="max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="w-5 h-5" />
-          Brawl Stars — Boost de trophées
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Slider Trophées actuels */}
-        <section>
-          <label className="text-sm font-medium">Trophées actuels</label>
-          <Slider
-            min={MIN}
-            max={MAX}
-            step={STEP}
-            value={[currentTrophies]}
-            onValueChange={(v) => setCurrentTrophies(v[0])}
-          />
-          <div className="text-right text-sm font-semibold">{currentTrophies}</div>
-        </section>
+    <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="w-full max-w-4xl p-8 space-y-8 bg-gray-800 rounded-lg shadow-lg">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold">Brawl Stars — Boost de trophées</h2>
+        </div>
 
-        {/* Slider Trophées souhaités */}
-        <section>
-          <label className="text-sm font-medium">Trophées souhaités</label>
-          <Slider
-            min={MIN}
-            max={MAX}
-            step={STEP}
-            value={[desiredTrophies]}
-            onValueChange={(v) => setDesiredTrophies(v[0])}
-          />
-          <div className="text-right text-sm font-semibold">{desiredTrophies}</div>
-        </section>
-
-        {/* Résumé */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-          <div className="p-3 rounded-lg border border-gray-200/10">
-            <div className="text-xs text-muted-foreground">Différence</div>
-            <div className="text-lg font-semibold">{diff.toLocaleString("fr-FR")}</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Section de configuration du boost */}
+          <div className="p-6 bg-gray-700 rounded-lg">
+            <h3 className="text-xl font-semibold mb-4">Configuration du boost</h3>
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="currentTrophies" className="block mb-2 text-sm font-medium">Trophées actuels: {currentTrophies}</label>
+                <input
+                  id="currentTrophies"
+                  type="range"
+                  min="0"
+                  max="50000"
+                  value={currentTrophies}
+                  onChange={handleCurrentTrophiesChange}
+                  className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+              <div>
+                <label htmlFor="desiredTrophies" className="block mb-2 text-sm font-medium">Trophées souhaités: {desiredTrophies}</label>
+                <input
+                  id="desiredTrophies"
+                  type="range"
+                  min={currentTrophies} // Le minimum est la valeur actuelle
+                  max="50000"
+                  value={desiredTrophies}
+                  onChange={handleDesiredTrophiesChange}
+                  className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="p-3 rounded-lg border border-gray-200/10">
-            <div className="text-xs text-muted-foreground">Prix / 1000</div>
-            <div className="text-lg font-semibold">{pricePer1000.toFixed(2)} €</div>
+          {/* Section du résumé de la commande */}
+          <div className="p-6 bg-gray-700 rounded-lg flex flex-col justify-between">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Résumé</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span>Différence:</span>
+                  <span className="font-bold">{difference.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Prix / 1000:</span>
+                  <span className="font-bold">{BASE_PRICE_PER_1000.toFixed(2)} €</span>
+                </div>
+                <div className="flex justify-between text-2xl font-bold text-green-400">
+                  <span>Total:</span>
+                  <span>{totalPrice} €</span>
+                </div>
+              </div>
+            </div>
+            <button className="w-full py-3 mt-6 text-lg font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
+              Commander
+            </button>
           </div>
-
-          <div className="p-3 rounded-lg border border-gray-200/10">
-            <div className="text-xs text-muted-foreground">Total</div>
-            {/* ⚡ Ici on affiche bien le total CALCULÉ */}
-            <div className="text-xl font-bold">{totalPrice} €</div>
-          </div>
-        </section>
-
-        <Button className="w-full">
-          <Crown className="mr-2 h-4 w-4" /> Commander
-        </Button>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default BrawlStars;
