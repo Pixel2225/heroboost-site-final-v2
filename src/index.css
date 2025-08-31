@@ -1,20 +1,19 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* Background global */
+/* Mode sombre par défaut */
+:root { color-scheme: dark; }
+
+/* Prend toute la hauteur */
+html, body, #root {
+  height: 100%;
+}
+
+/* Fond uni + texte blanc (PAS de from-*, donc aucun souci) */
 body {
-  @apply bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white;
+  @apply bg-slate-950 text-white antialiased;
 }
 
-/* Scrollbar stylée (optionnel mais stylé 😎) */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-thumb {
-  background: #22c55e; /* vert Tailwind (emerald/green) */
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
+/* Optionnel : conteneur global */
+.container {
+  @apply max-w-6xl mx-auto px-4;
 }
